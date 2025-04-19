@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <title>หลักฐานการชำระเงิน</title>
+  <style>
+    @media print {
+      body {
+        width: 210mm;
+        height: 297mm;
+        margin: 0;
+      }
+      .no-print {
+        display: none;
+      }
+    }
+
+    body {
+      font-family: "Tahoma", sans-serif;
+      max-width: 800px;
+      margin: auto;
+      padding: 20px;
+      background: #fff;
+      border: 1px solid #ccc;
+      display: flex;
+      flex-direction: column;
+    }
+
+    h2 {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+
+    .slip-section {
+      flex: 1;
+      text-align: center;
+      margin-bottom: 30px;
+      border: 2px dashed #ccc;
+      padding: 15px;
+      position: relative;
+    }
+
+    .slip-section img {
+      max-width: 100%;
+      max-height: 500px;
+      border: 1px solid #ccc;
+      object-fit: contain;
+      margin-top: 10px;
+    }
+
+    .paste-hint {
+      color: #888;
+      font-size: 14px;
+    }
+
+    form {
+      flex: 1;
+    }
+
+    label {
+      display: block;
+      margin-top: 12px;
+      font-weight: bold;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 8px;
+      margin-top: 5px;
+      box-sizing: border-box;
+      font-size: 14px;
+    }
+
+    .print-btn {
+      text-align: center;
+      margin-top: 30px;
+    }
+  </style>
+</head>
+<body>
+  <h2>หลักฐานการชำระเงิน</h2>
+
+  <!-- พื้นที่ภาพสลิป -->
+  <div class="slip-section" id="slipSection">
+    <label for="slip">แนบหลักฐานการชำระเงิน (รูปภาพ)</label>
+    <input type="file" id="slip" name="slip" accept="image/*" onchange="showPreview(event)" class="no-print" />
+    <div class="paste-hint">หรือวางภาพ (Ctrl + V)</div>
+    <img id="slipPreview" alt="ตัวอย่างหลักฐาน" />
+  </div>
+
+  <!-- ฟอร์มข้อมูล -->
+  <label for="channel">จองผ่าน</label>
+    <select id="channel" name="channel" required>
+      <option value="">-- เลือก --</option>
+      <option>Facebook</option>
+      <option>Line@</option>
+      <option>Direct Call</option>
+      <option>Walk-in</option>
+    </select>
+  <form>
+    <label for="payerName">ชื่อผู้จอง</label>
+    <input type="text" id="payerName" name="payerName" required />
+
+    <label for="paymentDate">เช็คอิน</label>
+    <input type="date" id="paymentDate" name="paymentDate" required />
+    <label for="paymentDate">เช็คเอ้าท์</label>
+    <input type="date" id="paymentDate" name="paymentDate" required />
+     <label for="phone">ห้อง & จำนวนผู้เข้าพัก</label>
+    <input type="tel" id="phone" name="phone" />
+     <label for="phone">เตียงเสริม</label>
+    <input type="tel" id="phone" name="phone" />
+    <label for="amount">จำนวนเงิน (บาท)</label>
+    <input type="number" id="amount" name="amount" step="0.01" required />
+
+    <label for="channel">ช่องทางการชำระ</label>
+    <select id="channel" name="channel" required>
+      <option value="">-- เลือก --</option>
+      <option>Bank Transfer (โอน)</option>
+      <option>Credit Card (เครดิต)</option>
+      <option>Cash (เงินสด)</option>
+      <option>Pay Link (ลิงค์เปย์)</option>
+    </select>
+
+    <label for="phone">เบอร์โทรศัพท์</label>
+    <input type="tel" id="phone" name="phone" />
+
+    <label for="email">อีเมล</label>
+    <input type="email" id="email" name="email" />
+    <label for="email">หมายเหตุ</label>
+    <input type="email" id="email" name="email" />
+
+    <div class="print-btn no-print">
+      <button type="button" onclick="window.print()">พิมพ์ / บันทึกเป็น PDF</button>
+    </div>
+  </form>
+
+  <script>
+    // สำหรับ upload รูปจาก input
+    function showPreview(event) {
+      const [file] = event.target.files;
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = e => {
+          document.getElementById('slipPreview').src = e.target.result;
+        };
+        reader.readAsDataURL(file);
+      }
+    }
+
+    // รองรับ Paste รูปภาพ
+    document.addEventListener('paste', function (event) {
+      const items = event.clipboardData.items;
+      for (let item of items) {
+        if (item.type.indexOf("image") === 0) {
+          const blob = item.getAsFile();
+          const reader = new FileReader();
+          reader.onload = function (e) {
+            document.getElementById('slipPreview').src = e.target.result;
+          };
+          reader.readAsDataURL(blob);
+          event.preventDefault();
+        }
+      }
+    });
+  </script>
+</body>
+</html>
